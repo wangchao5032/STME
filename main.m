@@ -4,7 +4,7 @@ format long ;   %[ºúÎ°½¡Ìí¼Ó]±£ÁôĞ¡ÊıÎ»ÊıÔö¼Ó£¬±ãÓÚÅĞ¶Ï
 %D:Ä£ÄâÊı¾İ£¬ ×Ö¶Î£ºÊ±¼ä£¬x,y,ÀàĞÍ£¨0´ú±íAÀàĞÍ£¬1´ú±íBÀàĞÍ£©£¬´Ø±êºÅ£¨Ä¬ÈÏÎª0£©£¬¿ÉÄÜ»¹ÓĞµãµÄÀíÏë±êºÅ
 addpath('ÂÛÎÄÆäËû²åÍ¼') 
 % D = xlsread('simple_data.xlsx');
-D = xlsread('Ä£ÄâÊı¾İ11\data.xlsx');
+D = xlsread('±±¾©ÊĞÊı¾İ\²©Îï¹İ-¾ç³¡-¾Æ°É\²©Îï¹İ-¾ç³¡-¾Æ°É-data.xlsx');
  
 % 2019-11 ------------------------------
 % Éú³ÉĞÂµÄËæ»úµÄÄ£ÄâÊı¾İ
@@ -20,11 +20,11 @@ D = xlsread('Ä£ÄâÊı¾İ11\data.xlsx');
 % ShowOriginalCluster2Dimension(D);
 %% ÊäÈë²ÎÊı
 %d = Ripley_L(D); %¾ÛÀà´óĞ¡µÄÖ±¾¶ ÒòÎª±¾Ëã·¨²¢²»¹Ì¶¨´ØµÄÖ±¾¶£¬ËùÒÔ²»ÓÃ¼ÆËã
-k = 20;
+k = 13;
 tWindow = 5;
-kt = 10; % ceil(k*0.5);
-MinPts = 10; % ceil(k*0.5);
-distK_sigma_multi = 10; % µãÊı×î¶àµÄÀàĞÍ¿ÉÒÔ·Å¿ík¾àÀëµÄãĞÖµ
+kt = 8; % ceil(k*0.5);
+MinPts = 8; % ceil(k*0.5);
+distK_sigma_multi = 1; % µãÊı×î¶àµÄÀàĞÍ¿ÉÒÔ·Å¿ík¾àÀëµÄãĞÖµ
 distK_sigma_times = 3; 
 %% ¼ÆËãÃ¿¸öµã×î½üµÄK¸öÁÚ¾Ó ºÍ ËùÓĞµãµÚk¸öÁÚ¾ÓµÄÉıĞòÅÅĞòºóµÄ¾àÀë
 [knnList, distKUpList,distKList] = GetKNN(D,k,tWindow);  
@@ -72,7 +72,9 @@ for ii = 1 : length(D(:,1))     %°´ÕÕµÚk¸öÁÚ¾Ó¾àÀëµÄÉıĞò½øĞĞÃ¶¾Ù£¬Ò²¾ÍÊÇµÚi¸öµãÒ
         D(i, 5) = -1; 
     elseif RSTN_free_pts < MinPts
         RSTN_most_label = mode(RSTN_label);
-        D(i,5) = RSTN_most_label;
+        if RSTN_most_label ~=0 % ÕâÀï×¢ÒâRSTN_most_labelÓĞ¿ÉÄÜÎª0
+            D(i,5) = RSTN_most_label;
+        end
     else % Èç¹ûµÚi¸öµãÊÇºËĞÄµã£¬Ôò¿ªÊ¼Ò»¸öĞÂµÄ´Ø
         clusterLabel = clusterLabel + 1;    % ´Ø±ê¼Ç+1
         clusterValidList = [];  % ²ÎÓë¼ÆËãµ±Ç°´ØÓĞĞ§Ìå»ıµÄ¼¯ºÏ£¬´æ·Åµ±Ç°´ØµÄËùÓĞºËĞÄµã¡£ºÍtype_buf_coreµÄ×÷ÓÃÒ»Ñù£¬ÆäÊµ¿ÉÒÔÉ¾³ıµÄ¡£
@@ -263,14 +265,14 @@ showlegend = [showlegend, ShowCluster2Dimension(D,real_clusterLabel)];
 % showlegend = [showlegend, ShowCluster(D,real_clusterLabel)];
 % 4¡¢»æÖÆÍ¼Àı
 legend(showlegend,'Noise','Cluster1','Cluster2','Cluster3','Cluster4','Cluster5','Cluster6');
-axis([-20,20,-15,15,-0.5,1.5]);
+% axis([-20,20,-15,15,-0.5,1.5]);
 % axis([-20,20,-15,15]);
 set(gcf,'WindowStyle','normal');
 grid on;    % »­³öÍø¸ñ
 xlabel('x');
 ylabel('y');
 zlabel('t');
-% axis equal;
+axis equal;
 % set(gca,'YTicklabel',[] ); % ²»ÏÔÊ¾×ø±êÖá¿Ì¶ÈÊı×Ö
 % set(gca,'ytick',[]); % ²»ÏÔÊ¾×ø±êÖá¿Ì¶È
 % set(gca,'xtick',[]);
