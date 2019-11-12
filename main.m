@@ -75,13 +75,15 @@ for ii = 1 : length(D(:,1))     %°´ÕÕµÚk¸öÁÚ¾Ó¾àÀëµÄÉıĞò½øĞĞÃ¶¾Ù£¬Ò²¾ÍÊÇµÚi¸öµãÒ
         D(i,5) = RSTN_most_label;
     else % Èç¹ûµÚi¸öµãÊÇºËĞÄµã£¬Ôò¿ªÊ¼Ò»¸öĞÂµÄ´Ø
         clusterLabel = clusterLabel + 1;    % ´Ø±ê¼Ç+1
-        clusterValidList = [];  % ²ÎÓë¼ÆËãµ±Ç°´ØÓĞĞ§Ìå»ıµÄ¼¯ºÏ£¬´æ·Åµ±Ç°´ØµÄËùÓĞºËĞÄµã
+        clusterValidList = [];  % ²ÎÓë¼ÆËãµ±Ç°´ØÓĞĞ§Ìå»ıµÄ¼¯ºÏ£¬´æ·Åµ±Ç°´ØµÄËùÓĞºËĞÄµã¡£ºÍtype_buf_coreµÄ×÷ÓÃÒ»Ñù£¬ÆäÊµ¿ÉÒÔÉ¾³ıµÄ¡£
         clusterCoreList = [clusterCoreList,i]; % µ±Ç°´ØµÄµÚÒ»¸öºËĞÄµã
         labelFirstList = [labelFirstList,length(labelList)+1]; % ²úÉúµ±Ç°´ØµÄµÚÒ»¸öºËĞÄµãÊ±£¬ÒÑ¾­ÓĞlength(labelList)¸öµã±»±ê¼Ç¹ıÁË£¬ËùÒÔµ±Ç°´ØµÄµÚÒ»¸öºËĞÄµã¼´½«ÊÇµÚlength(labelList)+1¸ö±»±ê¼ÇµÄµã
          % ¹¹Ôì³õÊ¼¶ÓÁĞ
         queue = [i, RSTNList{i}];               %½«µÚi¸öµã¼°ÆäRSTN¼ÓÈë¶ÓÁĞ
         distK_buf = distKList_typet(:, queue); % ¶ÓÁĞÖĞËùÓĞµãµÄ¿¼ÂÇÀàĞÍµÄk¾àÀë
-        type_buf = D(queue, 4); % ´ØµÄÓĞĞ§µã£º³õÊ¼¶ÓÁĞÖĞËùÓĞµã+ºóĞø¼ÓÈë¶ÓÁĞµÄµãÖĞµÄºËĞÄµã
+        type_buf_init = D(queue,4); %  ´ØµÄÓĞĞ§µã1:´ØµÄ³õÊ¼¶ÓÁĞÖĞµÄËùÓĞµã
+        type_buf_core=[]; %  ´ØµÄÓĞĞ§µã2:ºóĞø¼ÓÈë¶ÓÁĞµÄµãÖĞµÄºËĞÄµã
+        
         % ¼ÆËã³õÊ¼¶ÓÁĞÖĞËùÓĞµãµÄ¾ùÖµºÍ±ê×¼²î
         distK_mu = mean(distK_buf, 2);                                          %¼ÆËã¡°¶ÓÁĞÖĞËùÓĞµãµÄ¿¼ÂÇÀàĞÍµÄk¾àÀë¡±ÖĞµãµÄ ¾ùÖµ
         distK_sigma_init = sqrt(var(distK_buf, 1, 2));                               %¼ÆËã¡°¶ÓÁĞÖĞËùÓĞµãµÄ¿¼ÂÇÀàĞÍµÄk¾àÀë¡±ÖĞµãµÄ ±ê×¼²î
@@ -95,6 +97,8 @@ for ii = 1 : length(D(:,1))     %°´ÕÕµÚk¸öÁÚ¾Ó¾àÀëµÄÉıĞò½øĞĞÃ¶¾Ù£¬Ò²¾ÍÊÇµÚi¸öµãÒ
 %                 break;
 %             end
             % -----------------1¡¢Í³¼Æµ±Ç°¶ÔÁĞÖĞ¸÷ÀàĞÍµãµÄÊıÄ¿
+            type_buf = [type_buf_init; type_buf_core]; % ´ØµÄÓĞĞ§µã£º³õÊ¼¶ÓÁĞÖĞËùÓĞµã+ºóĞø¼ÓÈë¶ÓÁĞµÄµãÖĞµÄºËĞÄµã
+            
             type_hist = [nnz(type_buf == 0) nnz(type_buf == 1) nnz(type_buf == 2)]; % Í³¼Æµ±Ç°¶ÓÁĞÖĞÓĞĞ§µãµÄËùÓĞÀàĞÍ
             type_valid = (type_hist >= MinPts);                   % µ±Ç°¶ÓÁĞµÄÓĞĞ§µãÖĞ£¬Èç¹ûÄ³ÖÖÀàĞÍµÄµãÊıÄ¿´óÓÚMinPts£¬ÔòÈÏÎªÕâĞ©ÀàĞÍÊÇÓĞÓ°ÏìÁ¦µÄ
             [~, dominate_type] = max(type_hist);                                    % ÕÒ³öµ±Ç°¶ÓÁĞµÄÓĞĞ§µãÖĞ£¬Ó°ÏìÁ¦×î´óµÄÀàĞÍ£¨ÎÄÕÂÖĞºöÂÔ£©
@@ -117,7 +121,7 @@ for ii = 1 : length(D(:,1))     %°´ÕÕµÚk¸öÁÚ¾Ó¾àÀëµÄÉıĞò½øĞĞÃ¶¾Ù£¬Ò²¾ÍÊÇµÚi¸öµãÒ
             Y2 = knnList{ptCurrent};     % ¶ÓÁĞÖĞµ±Ç°µãµÄk¸öÁÚ¾Ó
             X2 = RSTNList{ptCurrent};    % ¶ÓÁĞÖĞµ±Ç°µãµÄ¹²ÏíÁÚ¾Ó/Ö±½Ó¿É´ïµã
             if length(X2) >= MinPts  % Èç¹ûµ±Ç°µãÊÇºËĞÄµã
-                type_buf = [type_buf; D(ptCurrent, 4)]; % °Ñµ±Ç°µã¼ÓÈëµ±Ç°¶ÓÁĞµÄÓĞĞ§µãÁĞ±í¡£ÕâÀïÓĞbug£¬ÓĞµÄµã»á±»ÖØ¸´¼ÓÈë£¡£¡£¡£¡
+                type_buf_core = [type_buf_core; D(ptCurrent,4)];
                 clusterValidList = [clusterValidList,ptCurrent];             
                 for j = 1 : length(Y2)   % ±éÀúµ±Ç°µãµÄkÁÚ¾Ó
                     distK_diff = abs(distKList_typet(:, Y2(j)) - distK_mu);   % ¼ÆËãµ±Ç°µãµÚj¸öÁÚ¾ÓµÄ¿¼ÂÇÀàĞÍµÄk¾àÀë£¨1*3£© ºÍ ³õÊ¼´Ø¿¼ÂÇÀàĞÍµÄk¾àÀë¾ùÖµ£¨1*3£© µÄ²îÖµ£¨1*3£©                 
@@ -255,8 +259,8 @@ bar(temp(1:6,:),'stacked');
 showlegend=[];
 merge_num = 0;
 real_clusterLabel = clusterLabel - merge_num;
-% showlegend = [showlegend, ShowCluster2Dimension(D,real_clusterLabel)];
-showlegend = [showlegend, ShowCluster(D,real_clusterLabel)];
+showlegend = [showlegend, ShowCluster2Dimension(D,real_clusterLabel)];
+% showlegend = [showlegend, ShowCluster(D,real_clusterLabel)];
 % 4¡¢»æÖÆÍ¼Àı
 legend(showlegend,'Noise','Cluster1','Cluster2','Cluster3','Cluster4','Cluster5','Cluster6');
 axis([-20,20,-15,15,-0.5,1.5]);
