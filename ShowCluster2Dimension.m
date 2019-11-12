@@ -5,13 +5,19 @@ function [ showlegend ] = ShowCluster2Dimension( D,real_clusterLabel )
 %% 颜色列表
 %colorTable = ['b','r','y','y','m','c','r','y','g','m','b','r','y','g','m','b','r','y','g','m','b','r','y','g','m','b','r','y','g','m','b','r','y','g','m'];
 %colorTable = ['b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c'];
-colorTable = ['r','b','m','g','m','c','c','g','r','b','m','c','r','r','y','g','m','c','b','c','y','m','m','r','b','c','g','g','m','r','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c'];
-% colorTable = hsv2rgb([linspace(0, 0.9, real_clusterLabel+1)' linspace(0.99, 0.99, real_clusterLabel+1)' linspace(0.99, 0.99, real_clusterLabel+1)']);
+% colorTable = ['y','b','r','g','m','c','r','c','g','r','b','m','c','r','r','y','g','m','c','b','c','y','m','m','r','b','c','g','g','m','r','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c','b','r','y','g','m','c'];
+colorTable = hsv2rgb([linspace(0, 0.9, real_clusterLabel+1)' linspace(0.99, 0.99, real_clusterLabel+1)' linspace(0.99, 0.99, real_clusterLabel+1)']);
 % colorTable = hsv2rgb([linspace(0, 0.9, clusterNum+1)' linspace(0.99, 0.99, clusterNum+1)' linspace(0.99, 0.99, clusterNum+1)']);
 %% 簇的数目
 clusterNum=max(D(:,5));  % 合并碎小的簇之前簇的数目
 real_clusterNum = 0; % 真实的簇的数目
 showlegend=[];% 显示图例的图形
+
+%% 噪声点画小圆点
+cluster = D((D(:, 5) <= 0), :);  
+% scatter(cluster(:, 2),cluster(:,3), 15,'k','.');
+showlegend = [showlegend, scatter(cluster(:, 2),cluster(:,3), 50,'k','.')]; %[0.5 0.5 0.5]
+hold on
 
 %% 绘制聚类结果 
 for i=1:clusterNum
@@ -23,24 +29,18 @@ for i=1:clusterNum
     cluster1 = cluster((cluster(:,4) == 0),:);  %第i个簇中的A类型
     cluster2 = cluster((cluster(:,4) == 1),:);  %第i个簇中的B类型
     cluster3 = cluster((cluster(:,4) == 2),:);  %第i个簇中的C类型
-    % ------------------原来的，用不同形状绘制--------------------
-%     scatter(cluster1(:, 2), cluster1(:, 3), 15,colorTable(real_clusterNum, :),'.'); % +
-%     scatter(cluster2(:, 2), cluster2(:, 3), 15,colorTable(real_clusterNum, :),'.'); % <
-%     scatter(cluster3(:, 2), cluster3(:, 3), 15,colorTable(real_clusterNum, :),'.'); % o
-
-    %--------------------现在的
-%     scatter(cluster1(:, 2), cluster1(:, 3), 10,[0.5 0.5 0.5],'.');
-%     scatter(cluster2(:, 2), cluster2(:, 3), 10,[0.5 0.5 0.5],'.');
-%     scatter(cluster3(:, 2), cluster3(:, 3), 10,[0.5 0.5 0.5],'.');
-    if i==1 || i==2 || i==3
-        showlegend = [showlegend, scatter(cluster1(:, 2), cluster1(:, 3), 15,[colorTable(real_clusterNum), '.'])]; % +
-        scatter(cluster2(:, 2), cluster2(:, 3), 15,[colorTable(real_clusterNum), '.']); % <
-        scatter(cluster3(:, 2), cluster3(:, 3), 15,[colorTable(real_clusterNum), '.']); % o
-    else
-        scatter(cluster1(:, 2), cluster1(:, 3), 10,[0.5 0.5 0.5],'.');
-        scatter(cluster2(:, 2), cluster2(:, 3), 10,[0.5 0.5 0.5],'.');
-        scatter(cluster3(:, 2), cluster3(:, 3), 10,[0.5 0.5 0.5],'.');
-    end
+    cluster4 = cluster((cluster(:,4) == 3),:);  %第i个簇中的C类型
+    % ------------------用过渡色绘制--------------------
+    showlegend = [showlegend,scatter(cluster1(:, 2), cluster1(:, 3), 50,colorTable(real_clusterNum, :),'.')]; % +
+    scatter(cluster2(:, 2), cluster2(:, 3), 50,colorTable(real_clusterNum, :),'.'); % <
+    scatter(cluster3(:, 2), cluster3(:, 3), 50,colorTable(real_clusterNum, :),'.'); % o
+    scatter(cluster4(:, 2), cluster4(:, 3), 50,colorTable(real_clusterNum, :),'.'); % o
+    % ------------------用指定颜色绘制--------------------
+%     showlegend = [showlegend,scatter(cluster1(:, 2), cluster1(:, 3), 30,[colorTable(real_clusterNum),'.'])]; % +
+%     scatter(cluster2(:, 2), cluster2(:, 3), 50,[colorTable(real_clusterNum),'.']); % <
+%     scatter(cluster3(:, 2), cluster3(:, 3), 50,[colorTable(real_clusterNum),'.']); % <
+%     scatter(cluster4(:, 2), cluster4(:, 3), 50,[colorTable(real_clusterNum),'.']); % <
+    hold on;
     
     %  在簇的第一个点旁边标记文字（注意，这里并不是第一被加入簇的点）
 %     if ~isempty(cluster)
@@ -48,11 +48,6 @@ for i=1:clusterNum
 %     end
 end
 
-%% 噪声点画小圆点
-cluster = D((D(:, 5) <= 0), :);  
-
-showlegend = [showlegend, scatter(cluster(:, 2),cluster(:,3), 10,[0.5 0.5 0.5],'.')];
-hold on
 % grid on;    % 画出网格
 % axis([0,100,0,100]);
 % axis([-5,17,-8,8]);
