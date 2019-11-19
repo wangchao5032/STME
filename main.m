@@ -5,7 +5,7 @@ format long ;   %[ºúÎ°½¡Ìí¼Ó]±£ÁôĞ¡ÊıÎ»ÊıÔö¼Ó£¬±ãÓÚÅĞ¶Ï
 addpath('ÂÛÎÄÆäËû²åÍ¼') 
 % D = xlsread('simple_data.xlsx');
 D = xlsread('±±¾©ÊĞÊı¾İ\²©Îï¹İ-¾ç³¡-¾Æ°É\²©Îï¹İ-¾ç³¡-¾Æ°É-data.xlsx');
- 
+
 % 2019-11 ------------------------------
 % Éú³ÉĞÂµÄËæ»úµÄÄ£ÄâÊı¾İ
 % D3 = []; D2 = D3; D1 = D2;
@@ -14,16 +14,24 @@ D = xlsread('±±¾©ÊĞÊı¾İ\²©Îï¹İ-¾ç³¡-¾Æ°É\²©Îï¹İ-¾ç³¡-¾Æ°É-data.xlsx');
 % D3 = generate_ring_data(16, -8, 0, 18, 2,   0.5, 2);
 % D = [D1; D2; D3];
 % --------------------------------------------
-
-% »æÖÆÔ­Ê¼Êı¾İ
-% ShowOriginalCluster(D);
+%% »æÖÆÔ­Ê¼Êı¾İ
+% showlegend=[];
+% showlegend = [showlegend, ShowOriginalCluster(D)];
+% % 4¡¢»æÖÆÍ¼Àı
+% legend(showlegend,'A-Type','B-Type');
+% axis([-8,8,-8,8]);
+% set(gcf,'WindowStyle','normal');
+% grid on;    % »­³öÍø¸ñ
+% xlabel('x');
+% ylabel('y');
+% zlabel('t');
 % ShowOriginalCluster2Dimension(D);
 %% ÊäÈë²ÎÊı
 %d = Ripley_L(D); %¾ÛÀà´óĞ¡µÄÖ±¾¶ ÒòÎª±¾Ëã·¨²¢²»¹Ì¶¨´ØµÄÖ±¾¶£¬ËùÒÔ²»ÓÃ¼ÆËã
 k = 13;
 tWindow = 5;
 kt = 8; % ceil(k*0.5);
-MinPts = 8; % ceil(k*0.5);
+MinPts = 8; %ceil(k*0.5);
 distK_sigma_multi = 1; % µãÊı×î¶àµÄÀàĞÍ¿ÉÒÔ·Å¿ík¾àÀëµÄãĞÖµ
 distK_sigma_times = 3; 
 %% ¼ÆËãÃ¿¸öµã×î½üµÄK¸öÁÚ¾Ó ºÍ ËùÓĞµãµÚk¸öÁÚ¾ÓµÄÉıĞòÅÅĞòºóµÄ¾àÀë
@@ -68,13 +76,12 @@ for ii = 1 : length(D(:,1))     %°´ÕÕµÚk¸öÁÚ¾Ó¾àÀëµÄÉıĞò½øĞĞÃ¶¾Ù£¬Ò²¾ÍÊÇµÚi¸öµãÒ
     X = RSTNList{i};    % µÚi¸öµãµÄ¹²ÏíÁÚ¾Ó/Ö±½Ó¿É´ïµã
     RSTN_label = D(X,5); % µÚi¸öµãµÄ¹²Ïí½üÁÚµÄ±êÇ©
     RSTN_free_pts = nnz((RSTN_label == 0 | RSTN_label == -1)); % µÚi¸öµãµÄ¹²Ïí½üÁÚÖĞ±êÇ©Îª0»ò-1µÄµã
+    RSTN_most_label = mode(RSTN_label); % µÚi¸öµãµÄ¹²Ïí½üÁÚÖĞ³öÏÖ×î¶àµÄÀàĞÍ
     if length(X) < MinPts  % Èç¹ûµÚi¸öµãÊÇÔëÉù£¬²»ÊÇºËĞÄµã
         D(i, 5) = -1; 
-    elseif RSTN_free_pts < MinPts
-        RSTN_most_label = mode(RSTN_label);
-        if RSTN_most_label ~=0 % ÕâÀï×¢ÒâRSTN_most_labelÓĞ¿ÉÄÜÎª0
-            D(i,5) = RSTN_most_label;
-        end
+    elseif RSTN_free_pts < MinPts &&  RSTN_most_label ~=0
+%         RSTN_most_label = mode(RSTN_label);
+        D(i,5) = RSTN_most_label;
     else % Èç¹ûµÚi¸öµãÊÇºËĞÄµã£¬Ôò¿ªÊ¼Ò»¸öĞÂµÄ´Ø
         clusterLabel = clusterLabel + 1;    % ´Ø±ê¼Ç+1
         clusterValidList = [];  % ²ÎÓë¼ÆËãµ±Ç°´ØÓĞĞ§Ìå»ıµÄ¼¯ºÏ£¬´æ·Åµ±Ç°´ØµÄËùÓĞºËĞÄµã¡£ºÍtype_buf_coreµÄ×÷ÓÃÒ»Ñù£¬ÆäÊµ¿ÉÒÔÉ¾³ıµÄ¡£
@@ -172,6 +179,7 @@ for ii = 1 : length(D(:,1))     %°´ÕÕµÚk¸öÁÚ¾Ó¾àÀëµÄÉıĞò½øĞĞÃ¶¾Ù£¬Ò²¾ÍÊÇµÚi¸öµãÒ
         
     end
 end
+
 %% ½«ËéĞ¡µÄ´ØºÏ²¢ÖÁÆäËûµÄ´Ø
 % merge_num = 0;
 % for i = 1:length(clusterNumList)
@@ -192,27 +200,57 @@ end
 %         merge_num = merge_num+1;
 %     end
 % end
-%% ¼ÆËã´ØµÄÓĞĞ§Ïà¶ÔÃÜ¶È(¹éÒ»»¯ X'=(X-MIN)/(MAX-MIN))
-% 
-clusterRelativeDensityList =[]; %´ØµÄÓĞĞ§Ïà¶ÔÃÜ¶È
-clusterRelativeDensityListA = []; %´ØÖĞAÀàĞÍµãµÄÓĞĞ§Ïà¶ÔÃÜ¶È
-clusterRelativeDensityListB = []; %´ØÖĞBÀàĞÍµãµÄÓĞĞ§Ïà¶ÔÃÜ¶È
-% clusterRelativeDensityListC = []; %´ØÖĞCÀàĞÍµãµÄÓĞĞ§Ïà¶ÔÃÜ¶È
-for i = 1 : clusterLabel
-    clusterRelativeDensityList = [clusterRelativeDensityList;(clusterDensityList(i)-min(clusterDensityList))/(max(clusterDensityList)-min(clusterDensityList))];
-    clusterRelativeDensityListA = [clusterRelativeDensityListA;(clusterDensityListA(i)-min(clusterDensityListA))/(max(clusterDensityListA)-min(clusterDensityListA))];
-    clusterRelativeDensityListB = [clusterRelativeDensityListB;(clusterDensityListB(i)-min(clusterDensityListB))/(max(clusterDensityListB)-min(clusterDensityListB))];
-%     clusterRelativeDensityListC = [clusterRelativeDensityListC;(clusterDensityListC(i)-min(clusterDensityListC))/(max(clusterDensityListC)-min(clusterDensityListC))];
+%% ¼ÆËãÊÂ¼şÖ®¼äµÄ¿Õ¼äÏà¹ØÏµÊı
+% 1¡¢¼ÆËãÃ¿¸ö´ØµÄÖĞĞÄµã×ø±ê
+cluster_point = zeros(clusterLabel,2); % ´æ·ÅÃ¿¸ö´ØµÄÖĞĞÄµã×ø±ê
+for i = 1:clusterLabel
+    cluster = D((D(:, 5) == i), :); % µÚi¸ö´ØµÄËùÓĞµã
+    x = mean(cluster(:,2)); % µÚi¸ö´ØµÄËùÓĞµãµÄx×ø±ê¾ùÖµ
+    y = mean(cluster(:,3)); % µÚi¸ö´ØµÄËùÓĞµãµÄy×ø±ê¾ùÖµ
+    cluster_point(i,:) = [x y];
 end
-%% ¼ÆËã²»Í¬ÀàĞÍµãÖ®¼äµÄÏà¹ØÏµÊı 
-%{
-sAB = corrcoef([clusterRelativeDensityListA,clusterRelativeDensityListB]);
-corAB = sAB(1,2);
-% sAC = corrcoef([clusterRelativeDensityListA,clusterRelativeDensityListC]);
-% corAC = sAC(1,2);
-% sBC = corrcoef([clusterRelativeDensityListB,clusterRelativeDensityListC]);
-% corBC = sBC(1,2);
-%}
+% 2¡¢¼ÆËã´ØÓë´ØµÄÖĞĞÄµã×ø±êÖ®¼äµÄ¾àÀë£¨¼´´ØÖ®¼äµÄ¾àÀë£©¾ØÕó
+cluster_dist = zeros(clusterLabel,clusterLabel); % ´æ·ÅÃ¿¸ö´ØµÄÖĞĞÄµã×ø±êÖ®¼äµÄ¾àÀë¾ØÕó
+for i = 1 : clusterLabel
+    for j = 1 : clusterLabel
+        if i==j
+            continue;
+        end
+        cluster_dist(i,j) = sqrt((cluster_point(i, 1) - cluster_point(j,1))^2 + (cluster_point(i, 2) - cluster_point(j,2))^2);   %¼ÆËãiºÍjµÄ¿Õ¼ä¾àÀë
+    end
+end
+% ÈÃ¶Ô½ÇÏßµÄÖµµÈÓÚËùÔÚĞĞµÄµ¹ÊıµÚ¶ş¸ö×îĞ¡Öµ£¨¼´³ıÁË0Ö®ÍâµÄ×îĞ¡Öµ£©
+for i = 1: length(cluster_dist)
+     cluster_dist(i,i) =  min(cluster_dist(find(cluster_dist-min(cluster_dist))));
+end
+% ¶Ô¾àÀë¾ØÕóµÄµ¹Êı½øĞĞ¹éÒ»»¯:¾àÀë¾ØÕóµÄÃ¿¸öÖµ¶¼³ıÒÔËùÔÚĞĞµÄÖµÖ®ºÍ
+cluster_dist_sum = sum(cluster_dist); % cluster_distµÄÃ¿ĞĞµÄÀÛ¼ÓÖµ
+for i = 1: length(cluster_dist)
+    cluster_dist(:,i) =  cluster_dist(:,i)/cluster_dist_sum(i);    
+end
+% 3¡¢¼ÆËã´ØµÄ¹éÒ»»¯ÃÜ¶È£¬¼´ÓĞĞ§Ïà¶ÔÃÜ¶È (¹éÒ»»¯ X'=(X-MIN)/(MAX-MIN)) 
+cluster_density = [clusterDensityListA;clusterDensityListB;clusterDensityListC]'; % ËùÓĞ´ØµÄ»ìºÏÃÜ¶È
+for i = 1:  size(cluster_density,2)
+    cluster_density(:,i) = (cluster_density(:,i)-min(cluster_density(:,i))) / (max(cluster_density(:,i))-min(cluster_density(:,i)));
+end
+% 4¡¢¼ÆËãÊÂ¼şÖ®¼äµÄ¿Õ¼äÏà¹ØÏµÊı
+X = cluster_density(:,1);
+Y = cluster_density(:,2);
+Z = cluster_density(:,3);
+W = cluster_dist;
+% ¼ÆËãAºÍBÀàĞÍÊÂ¼şµÄÏà¹ØÏµÊı
+fenzi = 1/clusterLabel * (X - W * X)'* (Y-W*Y );
+fenmu = sqrt(1/clusterLabel * (X - W * X)' * (X - W * X)) * sqrt(1/clusterLabel *(Y-W*Y )' * (Y-W*Y ));
+sAB = fenzi/fenmu;
+% ¼ÆËãBºÍCÀàĞÍÊÂ¼şµÄÏà¹ØÏµÊı
+fenzi = 1/clusterLabel * (Y - W * Y)'* (Z-W*Z );
+fenmu = sqrt(1/clusterLabel * (Y - W * Y)' * (Y - W * Y)) * sqrt(1/clusterLabel *(Z-W*Z )' * (Z-W*Z ));
+sBC = fenzi/fenmu;
+% ¼ÆËãAºÍCÀàĞÍÊÂ¼şµÄÏà¹ØÏµÊı
+fenzi = 1/clusterLabel * (X - W * X)'* (Z-W*Z );
+fenmu = sqrt(1/clusterLabel * (X - W * X)' * (X - W * X)) * sqrt(1/clusterLabel *(Z-W*Z )' * (Z-W*Z ));
+sAC = fenzi/fenmu;
+
 %% ¼ÆËã´ØÄÚÁ½ÖÖÀàĞÍµãµÄ±ÈÀı
 % totalNumA = nnz(D(:,4)==0); %Êı¾İ¼¯ÖĞAÀàĞÍµãµÄÊıÄ¿
 % totalNumB = nnz(D(:,4)==1); %Êı¾İ¼¯ÖĞAÀàĞÍµãµÄÊıÄ¿
@@ -227,13 +265,12 @@ corAB = sAB(1,2);
 %     ratio = (length(cluster1)/totalNumA) / (length(cluster2)/totalNumB);
 %     ratioList = [ratioList; [i,ratio]];
 % end
-%% ¼ÆËã ·ÖÀà´íÎóÂÊ
-% clusterResult = D(:,5);
-% clusterTrue = D(:,6);
-% falseNum = length(find((clusterResult-clusterTrue)~=0)) ;
+
 %% »æÍ¼ÂÛÎÄÆäËûµÄ²åÍ¼
 % »æÖÆÖù×´Í¼
 figure();
+% temp = [clusterDensityListA', clusterDensityListB'];
+% bar(temp(1:4,:),'stacked');
 temp = [clusterDensityListA', clusterDensityListB',clusterDensityListC'];
 bar(temp(1:6,:),'stacked');
 
@@ -264,15 +301,15 @@ real_clusterLabel = clusterLabel - merge_num;
 showlegend = [showlegend, ShowCluster2Dimension(D,real_clusterLabel)];
 % showlegend = [showlegend, ShowCluster(D,real_clusterLabel)];
 % 4¡¢»æÖÆÍ¼Àı
-legend(showlegend,'Noise','Cluster1','Cluster2','Cluster3','Cluster4','Cluster5','Cluster6');
+legend(showlegend,'Noise','Cluster1','Cluster2','Cluster3','Cluster4','Cluster5','Cluster6','Cluster7','Cluster8','Cluster9','Cluster10','Cluster11','Cluster12','Cluster13','Cluster14','Cluster15','Cluster16','Cluster17','Cluster18','Cluster19','Cluster20','Cluster21','Cluster22','Cluster23','Cluster24','Cluster25');
 % axis([-20,20,-15,15,-0.5,1.5]);
-% axis([-20,20,-15,15]);
+axis([-8,8,-8,8]);
 set(gcf,'WindowStyle','normal');
 grid on;    % »­³öÍø¸ñ
 xlabel('x');
 ylabel('y');
 zlabel('t');
-axis equal;
+% axis equal;
 % set(gca,'YTicklabel',[] ); % ²»ÏÔÊ¾×ø±êÖá¿Ì¶ÈÊı×Ö
 % set(gca,'ytick',[]); % ²»ÏÔÊ¾×ø±êÖá¿Ì¶È
 % set(gca,'xtick',[]);
@@ -321,13 +358,3 @@ axis equal;
 % end
 % plot(x,y,'r--');
 % axis([0,1114,0,16]);
-%% Í³¼ÆÃ¿¸ö´ØÄÚ»ìºÏµãµÄÊıÄ¿
-% clusterNumList = [];
-% for i = 1 : clusterLabel
-%     clusterNumList = [clusterNumList,length(D(D(:,5)==i))];
-% end
-%% ¼ÆËãÃ¿¸ö´ØÄÚABÁ½ÖÖÀàĞÍµãµÄ±ÈÀı
-% ratioList = [];
-% for i = 1 : clusterLabel
-%     ratioList = [ratioList;clusterDensityListA(i)/clusterDensityListB(i)];
-% end
