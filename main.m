@@ -4,7 +4,7 @@ format long ;   %[ºúÎ°½¡Ìí¼Ó]±£ÁôĞ¡ÊıÎ»ÊıÔö¼Ó£¬±ãÓÚÅĞ¶Ï
 %D:Ä£ÄâÊı¾İ£¬ ×Ö¶Î£ºÊ±¼ä£¬x,y,ÀàĞÍ£¨0´ú±íAÀàĞÍ£¬1´ú±íBÀàĞÍ£©£¬´Ø±êºÅ£¨Ä¬ÈÏÎª0£©£¬¿ÉÄÜ»¹ÓĞµãµÄÀíÏë±êºÅ
 addpath('ÂÛÎÄÆäËû²åÍ¼') 
 % D = xlsread('simple_data.xlsx');
-D = xlsread('±±¾©ÊĞÊı¾İ\²©Îï¹İ-¾ç³¡-¾Æ°É\²©Îï¹İ-¾ç³¡-¾Æ°É-data.xlsx');
+D = xlsread('³ö×â³µÊı¾İ\green20131205choose4\green20131205choose4.xlsx');
 
 % 2019-11 ------------------------------
 % Éú³ÉĞÂµÄËæ»úµÄÄ£ÄâÊı¾İ
@@ -28,12 +28,13 @@ D = xlsread('±±¾©ÊĞÊı¾İ\²©Îï¹İ-¾ç³¡-¾Æ°É\²©Îï¹İ-¾ç³¡-¾Æ°É-data.xlsx');
 % ShowOriginalCluster2Dimension(D);
 %% ÊäÈë²ÎÊı
 %d = Ripley_L(D); %¾ÛÀà´óĞ¡µÄÖ±¾¶ ÒòÎª±¾Ëã·¨²¢²»¹Ì¶¨´ØµÄÖ±¾¶£¬ËùÒÔ²»ÓÃ¼ÆËã
-k = 13;
-tWindow = 5;
-kt = 8; % ceil(k*0.5);
-MinPts = 8; %ceil(k*0.5);
+k = 12;
+tWindow = 16;
+kt = 9; % ceil(k*0.5);
+MinPts = 9; %ceil(k*0.5);
 distK_sigma_multi = 1; % µãÊı×î¶àµÄÀàĞÍ¿ÉÒÔ·Å¿ík¾àÀëµÄãĞÖµ
 distK_sigma_times = 3; 
+% ×¢ÒâÏÂÎÄ¹ØÓÚ´ØÓĞĞ§ÃÜ¶ÈµÄ¼ÆËã»áºÍÊı¾İÊÇ·ñÊÇ¶şÎ¬»òÈıÎ¬Êı¾İÓĞ¹Ø£¬¼ÇµÃÇĞ»»¡£
 %% ¼ÆËãÃ¿¸öµã×î½üµÄK¸öÁÚ¾Ó ºÍ ËùÓĞµãµÚk¸öÁÚ¾ÓµÄÉıĞòÅÅĞòºóµÄ¾àÀë
 [knnList, distKUpList,distKList] = GetKNN(D,k,tWindow);  
 distKList_typet = distKList(2:end, :);  % ¿¼ÂÇÀàĞÍµÄk¾àÀë
@@ -165,6 +166,7 @@ for ii = 1 : length(D(:,1))     %°´ÕÕµÚk¸öÁÚ¾Ó¾àÀëµÄÉıĞò½øĞĞÃ¶¾Ù£¬Ò²¾ÍÊÇµÚi¸öµãÒ
         clusterDensityC = clusterNumC /V; %µ±Ç°´ØµÄCÀàĞÍµãµÄÃÜ¶È = µ±Ç°´ØÖĞCÀàĞÍµãµÄÊıÁ¿/µ±Ç°´ØµÄÌå»ı
         clusterDensityListC = [clusterDensityListC,clusterDensityC];
        
+%         ----------------ÒÔÏÂÊÇÁÙÊ±µÄ£¬¿ÉÒÔÉ¾µô---------------------
 %         clusterA = []; %±£´æµ±Ç°´ØµÄËùÓĞºËĞÄµãÖĞµÄAÀàĞÍ
 %         clusterB = []; %±£´æµ±Ç°´ØµÄËùÓĞºËĞÄµãÖĞµÄBÀàĞÍ
 %         cluster = []; %±£´æµ±Ç°´ØµÄËùÓĞºËĞÄµã
@@ -176,7 +178,6 @@ for ii = 1 : length(D(:,1))     %°´ÕÕµÚk¸öÁÚ¾Ó¾àÀëµÄÉıĞò½øĞĞÃ¶¾Ù£¬Ò²¾ÍÊÇµÚi¸öµãÒ
 %             end
 %         end
 %         cluster = [clusterA;clusterB];
-        
     end
 end
 
@@ -251,20 +252,11 @@ fenzi = 1/clusterLabel * (X - W * X)'* (Z-W*Z );
 fenmu = sqrt(1/clusterLabel * (X - W * X)' * (X - W * X)) * sqrt(1/clusterLabel *(Z-W*Z )' * (Z-W*Z ));
 sAC = fenzi/fenmu;
 
-%% ¼ÆËã´ØÄÚÁ½ÖÖÀàĞÍµãµÄ±ÈÀı
-% totalNumA = nnz(D(:,4)==0); %Êı¾İ¼¯ÖĞAÀàĞÍµãµÄÊıÄ¿
-% totalNumB = nnz(D(:,4)==1); %Êı¾İ¼¯ÖĞAÀàĞÍµãµÄÊıÄ¿
-% ratioList = [];     %´ØÖĞAÀàĞÍµãÊıÁ¿/BÀàĞÍµãÊıÁ¿ÁĞ±í
-% % clusterNumList = [];    %´ØÖĞËùÓĞµãµÄÊıÄ¿
-% for i=1:clusterLabel
-%     cluster = D((D(:, 5) == i), :);     %µÚi¸ö´Ø
-% %     clusterNumList = [clusterNumList;length(cluster(:,1))];
-%     cluster1 = cluster((cluster(:,4) == 0),:);  %µÚi¸ö´ØÖĞµÄAÀàĞÍ
-%     cluster2 = cluster((cluster(:,4) == 1),:);  %µÚi¸ö´ØÖĞµÄBÀàĞÍ
-% 
-%     ratio = (length(cluster1)/totalNumA) / (length(cluster2)/totalNumB);
-%     ratioList = [ratioList; [i,ratio]];
-% end
+%% ¼ÆËã´ØµÄ¹éÒ»»¯»ìºÏÃÜ¶È
+clusterDensityList_nor = [];
+for i = 1:  length(clusterDensityList)
+    clusterDensityList_nor = [clusterDensityList_nor; (clusterDensityList(i)-min(clusterDensityList)) / (max(clusterDensityList)-min(clusterDensityList))];
+end
 
 %% »æÍ¼ÂÛÎÄÆäËûµÄ²åÍ¼
 % »æÖÆÖù×´Í¼
