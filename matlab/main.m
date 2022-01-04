@@ -2,9 +2,9 @@ clc;clear;
 format long ;   %[ºúÎ°½¡Ìí¼Ó]±£ÁôĞ¡ÊıÎ»ÊıÔö¼Ó£¬±ãÓÚÅĞ¶Ï
 %% ´Óexcel±í¸ñÖĞ¶ÁÈ¡Êı¾İ
 %D:Ä£ÄâÊı¾İ£¬ ×Ö¶Î£ºÊ±¼ä£¬x,y,ÀàĞÍ£¨0´ú±íAÀàĞÍ£¬1´ú±íBÀàĞÍ£©£¬´Ø±êºÅ£¨Ä¬ÈÏÎª0£©£¬¿ÉÄÜ»¹ÓĞµãµÄÀíÏë±êºÅ
-addpath('ÂÛÎÄÆäËû²åÍ¼') 
+% addpath('ÂÛÎÄÆäËû²åÍ¼') 
 % D = xlsread('simple_data.xlsx');
-D = xlsread('³ö×â³µÊı¾İ\green20131205choose4\green20131205choose4.xlsx');
+D = xlsread('data\data2.xlsx');
 
 % 2019-11 ------------------------------
 % Éú³ÉĞÂµÄËæ»úµÄÄ£ÄâÊı¾İ
@@ -16,23 +16,25 @@ D = xlsread('³ö×â³µÊı¾İ\green20131205choose4\green20131205choose4.xlsx');
 % --------------------------------------------
 %% »æÖÆÔ­Ê¼Êı¾İ
 % showlegend=[];
+% showlegend = [showlegend, ShowOriginalCluster2Dimension(D)];
 % showlegend = [showlegend, ShowOriginalCluster(D)];
-% % 4¡¢»æÖÆÍ¼Àı
+% 4¡¢»æÖÆÍ¼Àı
 % legend(showlegend,'A-Type','B-Type');
-% axis([-8,8,-8,8]);
+% legend(showlegend,'A-Type','B-Type','C-Type');
+% axis([-10,10,-10,10]);
 % set(gcf,'WindowStyle','normal');
 % grid on;    % »­³öÍø¸ñ
 % xlabel('x');
 % ylabel('y');
 % zlabel('t');
 % ShowOriginalCluster2Dimension(D);
-%% ÊäÈë²ÎÊı
+%%  ÊäÈë²ÎÊı
 %d = Ripley_L(D); %¾ÛÀà´óĞ¡µÄÖ±¾¶ ÒòÎª±¾Ëã·¨²¢²»¹Ì¶¨´ØµÄÖ±¾¶£¬ËùÒÔ²»ÓÃ¼ÆËã
-k = 12;
-tWindow = 16;
-kt = 9; % ceil(k*0.5);
-MinPts = 9; %ceil(k*0.5);
-distK_sigma_multi = 1; % µãÊı×î¶àµÄÀàĞÍ¿ÉÒÔ·Å¿ík¾àÀëµÄãĞÖµ
+k = 20;
+tWindow = 5;
+kt = 10;  % ceil(k*0.5);
+MinPts = 10; % ceil(k*0.5);
+distK_sigma_multi = 100; % µãÊı×î¶àµÄÀàĞÍ¿ÉÒÔ·Å¿ík¾àÀëµÄãĞÖµ
 distK_sigma_times = 3; 
 % ×¢ÒâÏÂÎÄ¹ØÓÚ´ØÓĞĞ§ÃÜ¶ÈµÄ¼ÆËã»áºÍÊı¾İÊÇ·ñÊÇ¶şÎ¬»òÈıÎ¬Êı¾İÓĞ¹Ø£¬¼ÇµÃÇĞ»»¡£
 %% ¼ÆËãÃ¿¸öµã×î½üµÄK¸öÁÚ¾Ó ºÍ ËùÓĞµãµÚk¸öÁÚ¾ÓµÄÉıĞòÅÅĞòºóµÄ¾àÀë
@@ -156,8 +158,9 @@ for ii = 1 : length(D(:,1))     %°´ÕÕµÚk¸öÁÚ¾Ó¾àÀëµÄÉıĞò½øĞĞÃ¶¾Ù£¬Ò²¾ÍÊÇµÚi¸öµãÒ
 %           [K,V] = convhull(cluster(:,2),cluster(:,3),cluster(:,1));   %µ±Ç°´ØµÄ×îĞ¡Í¹°ü
         %¼ÆËã¶şÎ¬µÄÍ¹°ü
         [K,V] = convhull(cluster(:,2),cluster(:,3));   %µ±Ç°´ØµÄ×îĞ¡Í¹°ü
-        
-        clusterDensity =  length(cluster) / V ;    %µ±Ç°´ØµÄÃÜ¶È=µ±Ç°´ØµÄÊıÁ¿/µ±Ç°´ØµÄÌå»ı
+        [len,tmp] = size(cluster)
+        clusterDensity = len / V ;    %µ±Ç°´ØµÄÃÜ¶È=µ±Ç°´ØµÄÊıÁ¿/µ±Ç°´ØµÄÌå»ı
+        % clusterDensity =  length(cluster) / V ;    %µ±Ç°´ØµÄÃÜ¶È=µ±Ç°´ØµÄÊıÁ¿/µ±Ç°´ØµÄÌå»ı
         clusterDensityList = [clusterDensityList;clusterDensity];
         clusterDensityA = clusterNumA /V; %µ±Ç°´ØµÄAÀàĞÍµãµÄÃÜ¶È = µ±Ç°´ØÖĞAÀàĞÍµãµÄÊıÁ¿/µ±Ç°´ØµÄÌå»ı    
         clusterDensityListA = [clusterDensityListA,clusterDensityA];
@@ -202,6 +205,7 @@ end
 %     end
 % end
 %% ¼ÆËãÊÂ¼şÖ®¼äµÄ¿Õ¼äÏà¹ØÏµÊı
+ %{
 % 1¡¢¼ÆËãÃ¿¸ö´ØµÄÖĞĞÄµã×ø±ê
 cluster_point = zeros(clusterLabel,2); % ´æ·ÅÃ¿¸ö´ØµÄÖĞĞÄµã×ø±ê
 for i = 1:clusterLabel
@@ -251,7 +255,7 @@ sBC = fenzi/fenmu;
 fenzi = 1/clusterLabel * (X - W * X)'* (Z-W*Z );
 fenmu = sqrt(1/clusterLabel * (X - W * X)' * (X - W * X)) * sqrt(1/clusterLabel *(Z-W*Z )' * (Z-W*Z ));
 sAC = fenzi/fenmu;
-
+ %}
 %% ¼ÆËã´ØµÄ¹éÒ»»¯»ìºÏÃÜ¶È
 clusterDensityList_nor = [];
 for i = 1:  length(clusterDensityList)
@@ -260,11 +264,11 @@ end
 
 %% »æÍ¼ÂÛÎÄÆäËûµÄ²åÍ¼
 % »æÖÆÖù×´Í¼
-figure();
+% figure();
 % temp = [clusterDensityListA', clusterDensityListB'];
 % bar(temp(1:4,:),'stacked');
-temp = [clusterDensityListA', clusterDensityListB',clusterDensityListC'];
-bar(temp(1:6,:),'stacked');
+% temp = [clusterDensityListA', clusterDensityListB',clusterDensityListC'];
+% bar(temp(1:6,:),'stacked');
 
 % ids =1:6;
 % [AX,H1,H2]=plotyy(ids,clusterDensityList',ids,clusterRelativeDensityList','bar','plot');
@@ -278,7 +282,7 @@ bar(temp(1:6,:),'stacked');
 % figure();
 % showlegend = [showlegend,ShowCircle(Circles,Radius)];
 % hold on;
-% 2¡¢»æÖÆÃ¿¸ö´ØµÄµÚÒ»¸öºËĞÄµãÎ»ÖÃ
+% % 1¡¢»æÖÆÃ¿¸ö´ØµÄµÚÒ»¸öºËĞÄµãÎ»ÖÃ
 % colorTable = ['r','y','m'];
 % for i = 1 : 1 % length(clusterCoreList)
 %      showlegend = [showlegend, scatter(D(clusterCoreList(i), 2), D(clusterCoreList(i), 3),400,'.',colorTable(i))];
@@ -293,14 +297,15 @@ real_clusterLabel = clusterLabel - merge_num;
 showlegend = [showlegend, ShowCluster2Dimension(D,real_clusterLabel)];
 % showlegend = [showlegend, ShowCluster(D,real_clusterLabel)];
 % 4¡¢»æÖÆÍ¼Àı
-legend(showlegend,'Noise','Cluster1','Cluster2','Cluster3','Cluster4','Cluster5','Cluster6','Cluster7','Cluster8','Cluster9','Cluster10','Cluster11','Cluster12','Cluster13','Cluster14','Cluster15','Cluster16','Cluster17','Cluster18','Cluster19','Cluster20','Cluster21','Cluster22','Cluster23','Cluster24','Cluster25');
+legend(showlegend,'Noise','Cluster1','Cluster2');
+% legend(showlegend,'Noise','Cluster1','Cluster2','Cluster3','Cluster4','Cluster5','Cluster6','Cluster7','Cluster8','Cluster9','Cluster10','Cluster11','Cluster12','Cluster13','Cluster14','Cluster15','Cluster16','Cluster17','Cluster18','Cluster19','Cluster20','Cluster21','Cluster22','Cluster23','Cluster24','Cluster25');
 % axis([-20,20,-15,15,-0.5,1.5]);
-axis([-8,8,-8,8]);
+% axis([-8,8,-8,8]);
 set(gcf,'WindowStyle','normal');
 grid on;    % »­³öÍø¸ñ
 xlabel('x');
 ylabel('y');
-zlabel('t');
+% zlabel('t');
 % axis equal;
 % set(gca,'YTicklabel',[] ); % ²»ÏÔÊ¾×ø±êÖá¿Ì¶ÈÊı×Ö
 % set(gca,'ytick',[]); % ²»ÏÔÊ¾×ø±êÖá¿Ì¶È
@@ -314,6 +319,7 @@ zlabel('t');
 % merge_num = 0;
 % real_clusterLabel = clusterLabel - merge_num;
 % ShowCluster(D,real_clusterLabel);
+% ShowClusterXZ(D);
 % ShowCluster2Dimension(D,real_clusterLabel);
 % axis([-12,12,-9,9]);
 %  axis equal;
