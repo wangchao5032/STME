@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser(description="stme.py")
 parser.add_argument("-k", type=int, default=20,
     help="Number of neighbors searched, determine the size of the spatiotemporal neighbourhood of each event")
 
-parser.add_argument("-tWindow", type=int, default=5,
+parser.add_argument("-tWindow", type=int, default=86400,
     help="Time window, determine the size of the spatiotemporal neighbourhood of each event")
 
 parser.add_argument("-kt", type=int, default=10,
@@ -17,7 +17,7 @@ parser.add_argument("-kt", type=int, default=10,
 parser.add_argument("-MinPts", type=int, default=10,
     help="Number of shared neighbors,used to identify the core event")
 
-parser.add_argument("-distK_sigma_multi", type=int, default=100,
+parser.add_argument("-distK_sigma_multi", type=int, default=3,
     help="点数最多的类型可以放宽k距离的阈值")
 
 parser.add_argument("-distK_sigma_times", type=int, default=3,
@@ -29,7 +29,7 @@ parser.add_argument("-data", default="data",
 parser.add_argument("-sheet", default="Sheet1",
     help="sheet name")
 
-parser.add_argument("-name",  default="data",
+parser.add_argument("-name",  default="20200101_hz_8_10",
     help="file name")
 
 

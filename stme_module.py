@@ -43,9 +43,10 @@ def GetKN(data, k, t_window):
     k_neighbor_idx = np.zeros((rows, k))  # 所有点的k近邻编号
 
     # 计算距离矩阵
+    print("正在计算距离矩阵...")
     for i in range(rows):
         if i % 100 == 0:
-            print("正在处理第{0}个轨迹点".format(i))
+            print("计算距离矩阵:正在处理第{0}个轨迹点".format(i))
         valid_data = (np.abs(data.values[:, 0] - data.values[i, 0]) <= t_window)
         invalid_data = np.logical_not(valid_data)
         dist_matrix[i, valid_data] = np.linalg.norm((data.values[valid_data, 1:3] - data.values[i, 1:3]), axis=1)
@@ -53,7 +54,10 @@ def GetKN(data, k, t_window):
         dist_matrix[i, i] = float("inf")
 
     # 查找每个点的k近邻及距离
+    print("正在查找每个点的k近邻及距离...")
     for i in range(rows):
+        if i % 100 == 0:
+            print("查找每个点的k近邻及距离:正在处理第{0}个轨迹点".format(i))
         dist_i = sorted(dist_matrix[i])  # 排序后的第i个对象的k近邻距离
         dist_i_idx = np.argsort(dist_matrix[i])  # 排序后的第i个对象的k近邻距离 对应的 数据编号
         dist_matrix_topK[i][0] = dist_i[k-1]  # 包含所有类型的第k个最近的距离
@@ -77,7 +81,10 @@ def GetRN(topK_neighbor, kt):
     """
     rows = topK_neighbor.shape[0]  # 数据集中点的数目
     rstn = []  # 每个点的共享近邻列表   [[] for _ in range(rows)]
+    print("正在计算共享近邻...")
     for i in range(rows):
+        if i % 100 == 0:
+            print("计算共享近邻:正在处理第{0}个轨迹点".format(i))
         rstn_i = []  # 第i个点的共享近邻列表
         neighbor_i = topK_neighbor[i]  # 第i个点的k近邻
         for j in neighbor_i:  # 第i个点的j邻居
@@ -96,7 +103,6 @@ def STME(data, k, kt, t_window, min_pts, distK_sigma_multi, distK_sigma_times, s
     print("共{0}个轨迹点,{1}种类型".format(n_data, n_types))
 
     # 1. 计算每个点的k近邻距离，以及最近的K个邻居
-    print("正在计算k近邻距离...")
     dist_topK, topK_neighbor = GetKN(data, k, t_window)
 
     # 2. 计算聚类优先级（每个点第k个邻居的升序排序后的距离）
@@ -105,7 +111,6 @@ def STME(data, k, kt, t_window, min_pts, distK_sigma_multi, distK_sigma_times, s
     priority = np.argsort(dist_topk_alltype)
 
     # 3. 计算每个点的refined neighbors
-    print("正在计算共享近邻...")
     RSTN = GetRN(topK_neighbor, kt)
 
     # 4. 聚类
